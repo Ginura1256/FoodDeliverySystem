@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 interface Order {
   id: number;
@@ -23,15 +24,13 @@ export default function App() {
   const [status, setStatus] = useState<string>('Pending');
   const [submitting, setSubmitting] = useState<boolean>(false);
 
-  // Fetch orders from API
+  // Fetch orders from API using Axios
   const fetchOrders = async () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(API_BASE_URL);
-      if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
-      const data = await res.json();
-      setOrders(data);
+      const res = await axios.get<Order[]>(API_BASE_URL);
+      setOrders(res.data);
     } catch (err: any) {
       console.error(err);
       setError('Could not connect to API server at http://localhost:5158');
@@ -44,7 +43,7 @@ export default function App() {
     fetchOrders();
   }, []);
 
-  // Handle New Order Creation
+  // Handle New Order Creation using Axios
   const handleCreateOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -55,13 +54,7 @@ export default function App() {
         status,
       };
 
-      const res = await fetch(API_BASE_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newOrder),
-      });
-
-      if (!res.ok) throw new Error('Failed to create order');
+      await axios.post(API_BASE_URL, newOrder);
 
       await fetchOrders();
       setIsModalOpen(false);
