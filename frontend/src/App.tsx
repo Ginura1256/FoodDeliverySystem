@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import MenuList from './MenuList';
 
 interface Order {
   id: number;
@@ -200,6 +201,9 @@ export default function App() {
           </div>
         )}
       </div>
+
+      {/* Menu Items List Component */}
+      <MenuList />
 
       {/* New Order Modal */}
       {isModalOpen && (
