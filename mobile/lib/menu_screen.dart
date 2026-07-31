@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'api_service.dart';
 import 'cart_provider.dart';
+import 'cart_screen.dart';
 import 'menu_item.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -101,6 +102,39 @@ class _MenuScreenState extends State<MenuScreen> {
             onPressed: _refreshMenu,
             tooltip: 'Refresh Menu',
           ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.shopping_cart_outlined, color: Color(0xFF0F172A)),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => const CartScreen()),
+                  );
+                },
+                tooltip: 'View Shopping Cart',
+              ),
+              if (cart.itemCount > 0)
+                Positioned(
+                  right: 6,
+                  top: 6,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFF6B00),
+                      shape: BoxShape.circle,
+                    ),
+                    constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                    child: Text(
+                      '${cart.itemCount}',
+                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(width: 8),
         ],
         backgroundColor: Colors.white,
         elevation: 0.5,
