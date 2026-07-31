@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import DashboardLayout from './DashboardLayout';
+import OrderForm from './OrderForm';
 import MenuList from './MenuList';
 
 interface Order {
@@ -17,21 +19,14 @@ export default function App() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  // Form State
-  const [customerId, setCustomerId] = useState<number>(101);
-  const [totalAmount, setTotalAmount] = useState<number>(24.99);
-  const [status, setStatus] = useState<string>('Pending');
-  const [submitting, setSubmitting] = useState<boolean>(false);
-
-  // Fetch orders from API using Axios
+  // Fetch orders from backend API
   const fetchOrders = async () => {
     try {
       setLoading(true);
       setError(null);
       const res = await axios.get<Order[]>(API_BASE_URL);
-      setOrders(res.data);
+      setOrders(res.data || []);
     } catch (err: any) {
       console.error(err);
       setError('Could not connect to API server at http://localhost:5158');
@@ -44,62 +39,16 @@ export default function App() {
     fetchOrders();
   }, []);
 
-  // Handle New Order Creation using Axios
-  const handleCreateOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      setSubmitting(true);
-      const newOrder = {
-        customerId: Number(customerId),
-        totalAmount: Number(totalAmount),
-        status,
-      };
-
-      await axios.post(API_BASE_URL, newOrder);
-
-      await fetchOrders();
-      setIsModalOpen(false);
-      // Reset form
-      setCustomerId(Math.floor(100 + Math.random() * 900));
-      setTotalAmount(parseFloat((15 + Math.random() * 50).toFixed(2)));
-    } catch (err: any) {
-      alert(err.message || 'Failed to submit order');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // Stats calculations
+  // Calculate Dashboard Metrics
   const totalOrdersCount = orders.length;
   const pendingCount = orders.filter((o) => o.status.toLowerCase() === 'pending').length;
   const deliveredCount = orders.filter((o) => o.status.toLowerCase() === 'delivered').length;
   const totalRevenue = orders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
 
   return (
-    <div className="container">
-      {/* Navigation & Header */}
-      <header className="header">
-        <div className="logo-group">
-          <div className="logo-icon">🍔</div>
-          <div>
-            <h1 className="logo-title">FoodDelivery System</h1>
-            <p style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Order Management Dashboard</p>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <div className="api-badge">
-            <div className="status-dot"></div>
-            <span>API Online (PostgreSQL)</span>
-          </div>
-          <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
-            <span>+</span> Create Order
-          </button>
-        </div>
-      </header>
-
-      {/* Metrics Row */}
-      <div className="stats-grid">
+    <DashboardLayout>
+      {/* Top Metrics Cards */}
+      <div className="stats-grid" style={{ marginBottom: '2rem' }}>
         <div className="stat-card">
           <div className="stat-icon" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b' }}>📦</div>
           <div>
@@ -133,11 +82,38 @@ export default function App() {
         </div>
       </div>
 
-      {/* Main Content & Orders Table */}
+      {/* Side-by-Side Main Section: OrderForm & MenuList */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))',
+          gap: '1.5rem',
+          marginBottom: '2.5rem',
+        }}
+      >
+        {/* Order Creation Form */}
+        <OrderForm onOrderCreated={fetchOrders} />
+
+        {/* Menu Catalog List Component */}
+        <div
+          style={{
+            background: 'rgba(30, 41, 59, 0.7)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '16px',
+            padding: '1.5rem',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+          }}
+        >
+          <MenuList />
+        </div>
+      </div>
+
+      {/* Recent Orders List Table */}
       <div className="section-header">
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Recent Customer Orders</h2>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Active Database Orders</h2>
         <button className="btn-secondary" onClick={fetchOrders} style={{ fontSize: '0.85rem' }}>
-          🔄 Refresh
+          🔄 Refresh Orders
         </button>
       </div>
 
@@ -156,7 +132,7 @@ export default function App() {
           </div>
         ) : orders.length === 0 ? (
           <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>
-            No orders found. Click "+ Create Order" to place your first order!
+            No orders found in database. Use the Order Form above to place your first order!
           </div>
         ) : (
           <div className="table-wrapper">
@@ -201,78 +177,6 @@ export default function App() {
           </div>
         )}
       </div>
-
-      {/* Menu Items List Component */}
-      <MenuList />
-
-      {/* New Order Modal */}
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Place New Order</h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '1.5rem', cursor: 'pointer' }}
-              >
-                &times;
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateOrder}>
-              <div className="form-group">
-                <label className="form-label">Customer ID</label>
-                <input
-                  type="number"
-                  className="form-input"
-                  value={customerId}
-                  onChange={(e) => setCustomerId(Number(e.target.value))}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Total Amount ($)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  className="form-input"
-                  value={totalAmount}
-                  onChange={(e) => setTotalAmount(Number(e.target.value))}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Order Status</label>
-                <select
-                  className="form-select"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Preparing">Preparing</option>
-                  <option value="Out for Delivery">Out for Delivery</option>
-                  <option value="Delivered">Delivered</option>
-                </select>
-              </div>
-
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-primary" disabled={submitting}>
-                  {submitting ? 'Submitting...' : 'Create Order'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
+    </DashboardLayout>
   );
 }
