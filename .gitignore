@@ -1,0 +1,35 @@
+# Build & Tool Outputs
+bin/
+obj/
+dist/
+build/
+node_modules/
+.dart_tool/
+
+# Environment & IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userossc
+.env
+.env.local
+.env.production
+.env.development
+
+# Flutter / Mobile specific
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+ephemeral/
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+
+# Operating System
+.DS_Store
+Thumbs.db
