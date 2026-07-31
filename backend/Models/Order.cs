@@ -8,4 +8,7 @@ public class Order
     public string Status { get; set; } = "Pending";
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    public List<MenuItem> Items { get; set; } = new();
+    public DeliveryJob? DeliveryJob { get; set; }
 }
