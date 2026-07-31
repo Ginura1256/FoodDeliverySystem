@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'api_service.dart';
+import 'cart_provider.dart';
 import 'menu_item.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -12,6 +14,7 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   final ApiService _apiService = ApiService();
   late Future<List<MenuItem>> _menuItemsFuture;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -25,8 +28,58 @@ class _MenuScreenState extends State<MenuScreen> {
     });
   }
 
+  // Handle Order Submission
+  Future<void> _handleCheckout(CartProvider cart) async {
+    if (cart.items.isEmpty) return;
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    final success = await _apiService.submitOrder(cart.items);
+
+    setState(() {
+      _isSubmitting = false;
+    });
+
+    if (!mounted) return;
+
+    if (success) {
+      final totalPaid = cart.totalPrice.toStringAsFixed(2);
+      cart.clearCart();
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Row(
+            children: [
+              Text('🎉 ', style: TextStyle(fontSize: 24)),
+              Text('Order Confirmed!'),
+            ],
+          ),
+          content: Text('Your order totaling \$$totalPaid has been submitted to the kitchen.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK', style: TextStyle(color: Color(0xFFFF6B00), fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to submit order. Please check backend connection.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final cart = context.watch<CartProvider>();
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -119,10 +172,11 @@ class _MenuScreenState extends State<MenuScreen> {
           final menuItems = snapshot.data!;
 
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 100.0),
             itemCount: menuItems.length,
             itemBuilder: (context, index) {
               final item = menuItems[index];
+              final isInCart = cart.items.any((i) => i.id == item.id);
 
               return Card(
                 elevation: 3,
@@ -190,7 +244,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       const Divider(color: Color(0xFFF1F5F9), height: 1),
                       const SizedBox(height: 12),
 
-                      // Price and Prominent 'Add to Cart' Button
+                      // Price and Add to Cart Button
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -217,22 +271,22 @@ class _MenuScreenState extends State<MenuScreen> {
                             ],
                           ),
 
-                          // Prominent 'Add to Cart' Button
+                          // Add to Cart / Remove Button
                           ElevatedButton.icon(
                             onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('${item.name} added to cart!'),
-                                  duration: const Duration(seconds: 2),
-                                  behavior: SnackBarBehavior.floating,
-                                  backgroundColor: const Color(0xFF0F172A),
-                                ),
-                              );
+                              if (isInCart) {
+                                cart.removeItem(item);
+                              } else {
+                                cart.addItem(item);
+                              }
                             },
-                            icon: const Icon(Icons.add_shopping_cart_rounded, size: 18),
-                            label: const Text('Add to Cart'),
+                            icon: Icon(
+                              isInCart ? Icons.check : Icons.add_shopping_cart_rounded,
+                              size: 18,
+                            ),
+                            label: Text(isInCart ? 'In Cart' : 'Add to Cart'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFF6B00),
+                              backgroundColor: isInCart ? const Color(0xFF059669) : const Color(0xFFFF6B00),
                               foregroundColor: Colors.white,
                               elevation: 2,
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -255,6 +309,60 @@ class _MenuScreenState extends State<MenuScreen> {
           );
         },
       ),
+
+      // Bottom Shopping Cart Bar
+      bottomSheet: cart.items.isEmpty
+          ? null
+          : Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${cart.itemCount} items in cart',
+                        style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        '\$${cart.totalPrice.toStringAsFixed(2)}',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+                      ),
+                    ],
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: _isSubmitting ? null : () => _handleCheckout(cart),
+                    icon: _isSubmitting
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          )
+                        : const Icon(Icons.rocket_launch),
+                    label: Text(_isSubmitting ? 'Placing Order...' : 'Checkout (POST /api/orders)'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF6B00),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 

@@ -38,7 +38,7 @@ class ApiService {
         final List<dynamic> jsonList = json.decode(response.body);
         return jsonList.map((json) => MenuItem.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load menu items. Server returned status code: ${response.statusCode}');
+        throw Exception('Failed to load menu items. Server status: ${response.statusCode}');
       }
     } catch (e) {
       // Try fallback URL (port 5000) if primary port fails
@@ -53,5 +53,50 @@ class ApiService {
       
       rethrow;
     }
+  }
+
+  // Asynchronous HTTP POST request to submit a customer order
+  Future<bool> submitOrder(List<MenuItem> cartItems) async {
+    if (cartItems.isEmpty) return false;
+
+    // Calculate total price
+    final double totalPrice = cartItems.fold(0.0, (sum, item) => sum + item.price);
+
+    // Format payload for backend Order entity (CustomerId: 2)
+    final Map<String, dynamic> payload = {
+      'customerId': 2, // Hardcoded customerId for Customer App
+      'totalAmount': double.parse(totalPrice.toStringAsFixed(2)),
+      'status': 'Pending',
+    };
+
+    final headers = {'Content-Type': 'application/json'};
+
+    try {
+      final Uri uri = Uri.parse('$baseUrl/orders');
+      final response = await http.post(
+        uri,
+        headers: headers,
+        body: json.encode(payload),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+    } catch (e) {
+      // Attempt fallback URL port 5000
+      try {
+        final Uri fallbackUri = Uri.parse('$fallbackUrl/orders');
+        final response = await http.post(
+          fallbackUri,
+          headers: headers,
+          body: json.encode(payload),
+        );
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          return true;
+        }
+      } catch (_) {}
+    }
+
+    return false;
   }
 }

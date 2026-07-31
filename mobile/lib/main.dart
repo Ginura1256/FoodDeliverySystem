@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'cart_provider.dart';
 import 'menu_screen.dart';
 
 void main() {
-  runApp(const FoodDeliveryApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => CartProvider(),
+      child: const FoodDeliveryApp(),
+    ),
+  );
 }
 
 class FoodDeliveryApp extends StatelessWidget {
