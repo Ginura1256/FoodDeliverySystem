@@ -50,7 +50,7 @@ export default function App() {
       {/* Top Metrics Cards */}
       <div className="stats-grid" style={{ marginBottom: '2rem' }}>
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b' }}>📦</div>
+          <div className="stat-icon" style={{ background: '#fff7ed', color: '#ff6b00' }}>📦</div>
           <div>
             <div className="stat-val">{totalOrdersCount}</div>
             <div className="stat-label">Total Orders</div>
@@ -58,7 +58,7 @@ export default function App() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#6366f1' }}>⏳</div>
+          <div className="stat-icon" style={{ background: '#eef2ff', color: '#6366f1' }}>⏳</div>
           <div>
             <div className="stat-val">{pendingCount}</div>
             <div className="stat-label">Pending Orders</div>
@@ -66,7 +66,7 @@ export default function App() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#10b981' }}>✅</div>
+          <div className="stat-icon" style={{ background: '#ecfdf5', color: '#10b981' }}>✅</div>
           <div>
             <div className="stat-val">{deliveredCount}</div>
             <div className="stat-label">Delivered Orders</div>
@@ -74,7 +74,7 @@ export default function App() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(236, 72, 153, 0.15)', color: '#ec4899' }}>💰</div>
+          <div className="stat-icon" style={{ background: '#fdf2f8', color: '#ec4899' }}>💰</div>
           <div>
             <div className="stat-val">${totalRevenue.toFixed(2)}</div>
             <div className="stat-label">Total Revenue</div>
@@ -97,12 +97,11 @@ export default function App() {
         {/* Menu Catalog List Component */}
         <div
           style={{
-            background: 'rgba(30, 41, 59, 0.7)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             borderRadius: '16px',
             padding: '1.5rem',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+            boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.05)',
           }}
         >
           <MenuList />
@@ -111,15 +110,18 @@ export default function App() {
 
       {/* Recent Orders List Table */}
       <div className="section-header">
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Active Database Orders</h2>
-        <button className="btn-secondary" onClick={fetchOrders} style={{ fontSize: '0.85rem' }}>
+        <div>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>Active Database Orders</h2>
+          <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Real-time orders stored in PostgreSQL database</p>
+        </div>
+        <button className="btn-secondary" onClick={fetchOrders}>
           🔄 Refresh Orders
         </button>
       </div>
 
       <div className="orders-card">
         {loading ? (
-          <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>
+          <div style={{ padding: '3rem', textAlign: 'center', color: '#64748b' }}>
             Loading orders from PostgreSQL...
           </div>
         ) : error ? (
@@ -131,7 +133,7 @@ export default function App() {
             </button>
           </div>
         ) : orders.length === 0 ? (
-          <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>
+          <div style={{ padding: '3rem', textAlign: 'center', color: '#64748b' }}>
             No orders found in database. Use the Order Form above to place your first order!
           </div>
         ) : (
@@ -149,9 +151,9 @@ export default function App() {
               <tbody>
                 {orders.map((o) => (
                   <tr key={o.id}>
-                    <td style={{ fontWeight: 600, color: '#f8fafc' }}>#{o.id}</td>
-                    <td>Customer #{o.customerId}</td>
-                    <td style={{ fontWeight: 600, color: '#34d399' }}>
+                    <td style={{ fontWeight: 700, color: '#0f172a' }}>#{o.id}</td>
+                    <td style={{ fontWeight: 600, color: '#334155' }}>Customer #{o.customerId}</td>
+                    <td style={{ fontWeight: 800, color: '#059669' }}>
                       ${Number(o.totalAmount).toFixed(2)}
                     </td>
                     <td>
@@ -167,7 +169,7 @@ export default function App() {
                         {o.status}
                       </span>
                     </td>
-                    <td style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
+                    <td style={{ color: '#64748b', fontSize: '0.85rem' }}>
                       {new Date(o.createdAt).toLocaleString()}
                     </td>
                   </tr>

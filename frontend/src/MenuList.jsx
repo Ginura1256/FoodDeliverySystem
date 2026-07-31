@@ -14,7 +14,7 @@ export default function MenuList() {
       setLoading(true);
       setError(null);
       const response = await axios.get(API_URL);
-      setMenuItems(response.data);
+      setMenuItems(response.data || []);
     } catch (err) {
       console.error('Error fetching menu items:', err);
       setError(err.message || 'Failed to fetch menu items from backend API');
@@ -29,7 +29,7 @@ export default function MenuList() {
 
   if (loading) {
     return (
-      <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>
+      <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
         <p>Loading menu items from database...</p>
       </div>
     );
@@ -41,15 +41,8 @@ export default function MenuList() {
         <p>⚠️ {error}</p>
         <button
           onClick={fetchMenuItems}
-          style={{
-            marginTop: '1rem',
-            padding: '0.5rem 1rem',
-            background: '#334155',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-          }}
+          className="btn-secondary"
+          style={{ marginTop: '1rem' }}
         >
           Retry
         </button>
@@ -58,43 +51,46 @@ export default function MenuList() {
   }
 
   return (
-    <div style={{ marginTop: '2rem' }}>
+    <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#f8fafc' }}>Restaurant Menu Items</h2>
-        <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>{menuItems.length} items available</span>
+        <div>
+          <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>Restaurant Menu Items</h2>
+          <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Catalog of available food items</p>
+        </div>
+        <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>{menuItems.length} items</span>
       </div>
 
       {menuItems.length === 0 ? (
-        <p style={{ color: '#94a3b8' }}>No menu items found.</p>
+        <p style={{ color: '#64748b', fontSize: '0.9rem' }}>No menu items found.</p>
       ) : (
-        <div style={{ overflowX: 'auto', background: 'rgba(30, 41, 59, 0.7)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+        <div style={{ overflowX: 'auto', background: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
-              <tr style={{ background: 'rgba(15, 23, 42, 0.6)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <th style={{ padding: '0.75rem 1rem', color: '#94a3b8', fontSize: '0.8rem', textTransform: 'uppercase' }}>ID</th>
-                <th style={{ padding: '0.75rem 1rem', color: '#94a3b8', fontSize: '0.8rem', textTransform: 'uppercase' }}>Name</th>
-                <th style={{ padding: '0.75rem 1rem', color: '#94a3b8', fontSize: '0.8rem', textTransform: 'uppercase' }}>Description</th>
-                <th style={{ padding: '0.75rem 1rem', color: '#94a3b8', fontSize: '0.8rem', textTransform: 'uppercase' }}>Price</th>
-                <th style={{ padding: '0.75rem 1rem', color: '#94a3b8', fontSize: '0.8rem', textTransform: 'uppercase' }}>Status</th>
+              <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                <th style={{ padding: '0.75rem 1rem', color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700 }}>ID</th>
+                <th style={{ padding: '0.75rem 1rem', color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700 }}>Name</th>
+                <th style={{ padding: '0.75rem 1rem', color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700 }}>Description</th>
+                <th style={{ padding: '0.75rem 1rem', color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700 }}>Price</th>
+                <th style={{ padding: '0.75rem 1rem', color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700 }}>Status</th>
               </tr>
             </thead>
             <tbody>
               {menuItems.map((item) => (
-                <tr key={item.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                  <td style={{ padding: '0.85rem 1rem', fontWeight: '600', color: '#f8fafc' }}>#{item.id}</td>
-                  <td style={{ padding: '0.85rem 1rem', fontWeight: '600', color: '#f59e0b' }}>{item.name}</td>
-                  <td style={{ padding: '0.85rem 1rem', color: '#cbd5e1', fontSize: '0.9rem' }}>{item.description}</td>
-                  <td style={{ padding: '0.85rem 1rem', fontWeight: '600', color: '#34d399' }}>${Number(item.price).toFixed(2)}</td>
+                <tr key={item.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '0.85rem 1rem', fontWeight: '700', color: '#0f172a' }}>#{item.id}</td>
+                  <td style={{ padding: '0.85rem 1rem', fontWeight: '700', color: '#c2410c' }}>{item.name}</td>
+                  <td style={{ padding: '0.85rem 1rem', color: '#475569', fontSize: '0.85rem' }}>{item.description}</td>
+                  <td style={{ padding: '0.85rem 1rem', fontWeight: '800', color: '#059669' }}>${Number(item.price).toFixed(2)}</td>
                   <td style={{ padding: '0.85rem 1rem' }}>
                     <span
                       style={{
-                        padding: '0.2rem 0.6rem',
-                        borderRadius: '12px',
+                        padding: '0.25rem 0.65rem',
+                        borderRadius: '20px',
                         fontSize: '0.75rem',
-                        fontWeight: '600',
-                        background: item.isAvailable !== false ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                        color: item.isAvailable !== false ? '#34d399' : '#f87171',
-                        border: item.isAvailable !== false ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
+                        fontWeight: '700',
+                        background: item.isAvailable !== false ? '#ecfdf5' : '#fef2f2',
+                        color: item.isAvailable !== false ? '#047857' : '#b91c1c',
+                        border: item.isAvailable !== false ? '1px solid #a7f3d0' : '1px solid #fecaca',
                       }}
                     >
                       {item.isAvailable !== false ? 'Available' : 'Unavailable'}

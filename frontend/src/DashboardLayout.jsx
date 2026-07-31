@@ -2,41 +2,43 @@ import React from 'react';
 
 export default function DashboardLayout({ children }) {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#0f172a', color: '#f8fafc' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#f8fafc', color: '#0f172a' }}>
       {/* Sidebar Navigation */}
       <aside
         style={{
           width: '260px',
-          background: 'rgba(30, 41, 59, 0.8)',
-          backdropFilter: 'blur(12px)',
-          borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+          background: '#ffffff',
+          borderRight: '1px solid #e2e8f0',
           padding: '1.5rem 1rem',
           display: 'flex',
           flexDirection: 'column',
-          justify: 'space-between',
+          justifyContent: 'space-between',
+          boxShadow: '4px 0 20px rgba(0, 0, 0, 0.02)',
         }}
       >
         <div>
           {/* Brand Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem', padding: '0 0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '2.25rem', padding: '0 0.5rem' }}>
             <div
               style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                width: '42px',
+                height: '42px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #ff6b00, #ff8e53)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '1.4rem',
-                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)',
+                fontSize: '1.5rem',
+                boxShadow: '0 6px 16px rgba(255, 107, 0, 0.35)',
               }}
             >
               🍔
             </div>
             <div>
-              <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#f8fafc' }}>FoodDelivery</h2>
-              <span style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: 600 }}>Admin Portal</span>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>FoodDelivery</h2>
+              <span style={{ fontSize: '0.75rem', color: '#ff6b00', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Admin Portal
+              </span>
             </div>
           </div>
 
@@ -47,14 +49,15 @@ export default function DashboardLayout({ children }) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.75rem',
+                gap: '0.85rem',
                 padding: '0.75rem 1rem',
-                borderRadius: '10px',
-                background: 'rgba(245, 158, 11, 0.15)',
-                color: '#fbbf24',
-                fontWeight: 600,
+                borderRadius: '12px',
+                background: '#fff7ed',
+                color: '#ff6b00',
+                fontWeight: 700,
                 textDecoration: 'none',
                 fontSize: '0.9rem',
+                borderLeft: '4px solid #ff6b00',
               }}
             >
               📊 Dashboard
@@ -64,12 +67,14 @@ export default function DashboardLayout({ children }) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.75rem',
+                gap: '0.85rem',
                 padding: '0.75rem 1rem',
-                borderRadius: '10px',
-                color: '#94a3b8',
+                borderRadius: '12px',
+                color: '#64748b',
+                fontWeight: 600,
                 textDecoration: 'none',
                 fontSize: '0.9rem',
+                transition: 'all 0.2s ease',
               }}
             >
               🍕 Menu Catalog
@@ -79,10 +84,11 @@ export default function DashboardLayout({ children }) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.75rem',
+                gap: '0.85rem',
                 padding: '0.75rem 1rem',
-                borderRadius: '10px',
-                color: '#94a3b8',
+                borderRadius: '12px',
+                color: '#64748b',
+                fontWeight: 600,
                 textDecoration: 'none',
                 fontSize: '0.9rem',
               }}
@@ -94,10 +100,11 @@ export default function DashboardLayout({ children }) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.75rem',
+                gap: '0.85rem',
                 padding: '0.75rem 1rem',
-                borderRadius: '10px',
-                color: '#94a3b8',
+                borderRadius: '12px',
+                color: '#64748b',
+                fontWeight: 600,
                 textDecoration: 'none',
                 fontSize: '0.9rem',
               }}
@@ -110,10 +117,10 @@ export default function DashboardLayout({ children }) {
         {/* Footer Admin User */}
         <div
           style={{
-            padding: '0.85rem',
-            background: 'rgba(15, 23, 42, 0.6)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
+            padding: '0.85rem 1rem',
+            background: '#f8fafc',
+            borderRadius: '14px',
+            border: '1px solid #e2e8f0',
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
@@ -121,22 +128,24 @@ export default function DashboardLayout({ children }) {
         >
           <div
             style={{
-              width: '36px',
-              height: '36px',
+              width: '38px',
+              height: '38px',
               borderRadius: '50%',
-              background: '#6366f1',
+              background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+              color: '#ffffff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontWeight: '700',
+              fontWeight: '800',
               fontSize: '0.85rem',
+              boxShadow: '0 4px 10px rgba(99, 102, 241, 0.3)',
             }}
           >
             AD
           </div>
           <div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>System Admin</div>
-            <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>admin@fooddelivery.com</div>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0f172a' }}>System Admin</div>
+            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>admin@fooddelivery.com</div>
           </div>
         </div>
       </aside>
@@ -146,33 +155,40 @@ export default function DashboardLayout({ children }) {
         {/* Topbar Header */}
         <header
           style={{
-            height: '70px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-            background: 'rgba(30, 41, 59, 0.4)',
-            backdropFilter: 'blur(12px)',
+            height: '74px',
+            borderBottom: '1px solid #e2e8f0',
+            background: '#ffffff',
             padding: '0 2rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.02)',
           }}
         >
-          <h1 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Admin Executive Dashboard</h1>
+          <div>
+            <h1 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a' }}>Admin Executive Dashboard</h1>
+            <p style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>
+              Live Order Operations & Real-Time PostgreSQL Synchronization
+            </p>
+          </div>
+
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                padding: '0.35rem 0.75rem',
+                padding: '0.4rem 0.85rem',
                 borderRadius: '20px',
-                background: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                color: '#34d399',
+                background: '#ecfdf5',
+                border: '1px solid #a7f3d0',
+                color: '#047857',
                 fontSize: '0.8rem',
-                fontWeight: 600,
+                fontWeight: 700,
               }}
             >
-              ● PostgreSQL Connected
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }}></span>
+              PostgreSQL Connected
             </div>
           </div>
         </header>

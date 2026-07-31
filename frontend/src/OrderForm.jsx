@@ -62,7 +62,6 @@ export default function OrderForm({ onOrderCreated }) {
 
     try {
       setSubmitting(true);
-      // Attempt primary port 5158, fallback to 5000 if needed
       try {
         await axios.post(ORDER_API_URL, payload);
       } catch {
@@ -86,17 +85,19 @@ export default function OrderForm({ onOrderCreated }) {
   return (
     <div
       style={{
-        background: 'rgba(30, 41, 59, 0.7)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
         borderRadius: '16px',
         padding: '1.5rem',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+        boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.05)',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
-        <span style={{ fontSize: '1.5rem' }}>📝</span>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc' }}>Create New Food Order</h2>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
+        <span style={{ fontSize: '1.4rem' }}>📝</span>
+        <div>
+          <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>Create New Food Order</h2>
+          <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Select items below to place order</p>
+        </div>
       </div>
 
       {/* Success Notification */}
@@ -104,12 +105,12 @@ export default function OrderForm({ onOrderCreated }) {
         <div
           style={{
             padding: '0.85rem 1rem',
-            background: 'rgba(16, 185, 129, 0.15)',
-            border: '1px solid rgba(16, 185, 129, 0.4)',
+            background: '#ecfdf5',
+            border: '1px solid #a7f3d0',
             borderRadius: '10px',
-            color: '#34d399',
+            color: '#047857',
             fontSize: '0.85rem',
-            fontWeight: 500,
+            fontWeight: 600,
             marginBottom: '1rem',
           }}
         >
@@ -122,12 +123,12 @@ export default function OrderForm({ onOrderCreated }) {
         <div
           style={{
             padding: '0.85rem 1rem',
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.4)',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
             borderRadius: '10px',
-            color: '#f87171',
+            color: '#b91c1c',
             fontSize: '0.85rem',
-            fontWeight: 500,
+            fontWeight: 600,
             marginBottom: '1rem',
           }}
         >
@@ -138,7 +139,7 @@ export default function OrderForm({ onOrderCreated }) {
       <form onSubmit={handleSubmitOrder}>
         {/* Customer ID input (Hardcoded to 1) */}
         <div style={{ marginBottom: '1.25rem' }}>
-          <label style={{ display: 'block', fontSize: '0.85rem', color: '#94a3b8', marginBottom: '0.4rem', fontWeight: 600 }}>
+          <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', marginBottom: '0.35rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Customer ID (Fixed Spec)
           </label>
           <input
@@ -147,28 +148,29 @@ export default function OrderForm({ onOrderCreated }) {
             readOnly
             style={{
               width: '100%',
-              background: 'rgba(15, 23, 42, 0.6)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '8px',
+              background: '#f8fafc',
+              border: '1px solid #cbd5e1',
+              borderRadius: '10px',
               padding: '0.65rem 0.85rem',
-              color: '#94a3b8',
+              color: '#334155',
               fontWeight: 700,
+              fontSize: '0.95rem',
             }}
           />
         </div>
 
         {/* Menu Item Selection List */}
         <div style={{ marginBottom: '1.25rem' }}>
-          <label style={{ display: 'block', fontSize: '0.85rem', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 600 }}>
+          <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', marginBottom: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Select Menu Items:
           </label>
 
           {loadingMenu ? (
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Loading available items...</p>
+            <p style={{ fontSize: '0.85rem', color: '#64748b' }}>Loading available items...</p>
           ) : menuItems.length === 0 ? (
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>No menu items found in backend.</p>
+            <p style={{ fontSize: '0.85rem', color: '#64748b' }}>No menu items found in backend.</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '200px', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '220px', overflowY: 'auto' }}>
               {menuItems.map((item) => {
                 const isSelected = selectedItems.some((i) => i.id === item.id);
                 return (
@@ -179,21 +181,22 @@ export default function OrderForm({ onOrderCreated }) {
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
-                      padding: '0.65rem 0.85rem',
-                      background: isSelected ? 'rgba(245, 158, 11, 0.15)' : 'rgba(15, 23, 42, 0.4)',
-                      border: isSelected ? '1px solid #f59e0b' : '1px solid rgba(255, 255, 255, 0.05)',
-                      borderRadius: '8px',
+                      padding: '0.75rem 0.9rem',
+                      background: isSelected ? '#fff7ed' : '#f8fafc',
+                      border: isSelected ? '2px solid #ff6b00' : '1px solid #e2e8f0',
+                      borderRadius: '10px',
                       cursor: 'pointer',
-                      transition: 'all 0.2s ease',
+                      transition: 'all 0.15s ease',
+                      boxShadow: isSelected ? '0 4px 12px rgba(255, 107, 0, 0.12)' : 'none',
                     }}
                   >
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: '0.9rem', color: isSelected ? '#fbbf24' : '#f8fafc' }}>
-                        {item.name}
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: isSelected ? '#c2410c' : '#0f172a' }}>
+                        {isSelected ? '✓ ' : ''}{item.name}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{item.description}</div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>{item.description}</div>
                     </div>
-                    <div style={{ fontWeight: 700, color: '#34d399', fontSize: '0.9rem' }}>
+                    <div style={{ fontWeight: 800, color: '#059669', fontSize: '0.95rem' }}>
                       ${Number(item.price).toFixed(2)}
                     </div>
                   </div>
@@ -210,14 +213,14 @@ export default function OrderForm({ onOrderCreated }) {
             justify: 'space-between',
             alignItems: 'center',
             padding: '0.85rem 1rem',
-            background: 'rgba(15, 23, 42, 0.8)',
-            borderRadius: '10px',
+            background: '#f8fafc',
+            borderRadius: '12px',
             marginBottom: '1.25rem',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            border: '1px solid #e2e8f0',
           }}
         >
-          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#cbd5e1' }}>Order Total Amount:</span>
-          <span style={{ fontSize: '1.3rem', fontWeight: 700, color: '#f59e0b' }}>
+          <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>Order Total Amount:</span>
+          <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#ff6b00' }}>
             ${calculatedTotal.toFixed(2)}
           </span>
         </div>
@@ -226,19 +229,8 @@ export default function OrderForm({ onOrderCreated }) {
         <button
           type="submit"
           disabled={submitting}
-          style={{
-            width: '100%',
-            padding: '0.8rem',
-            background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '10px',
-            fontWeight: 700,
-            fontSize: '0.95rem',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)',
-            transition: 'all 0.2s ease',
-          }}
+          className="btn-primary"
+          style={{ width: '100%', padding: '0.85rem' }}
         >
           {submitting ? 'Placing Order...' : '🚀 Place Order (POST /api/orders)'}
         </button>
